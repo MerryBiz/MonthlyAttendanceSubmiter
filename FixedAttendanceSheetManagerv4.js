@@ -74,13 +74,15 @@ function submitAttendancev4() {
   console.log("dateRange.getValues().length" + dateRange.getValues().length);
   for (var k = 0; k < dateRange.getValues().length; k++) {
     var value = dateRange.getValues()[k][0];
-    if (value === "合計金額(税込)") {
+        console.log(value);
+    if (value === "小計" || value === "合計金額(税込)") {
       break;
     }
     if (value === "") {
       continue;
     }
     var tranDate = new Date(value);
+        console.log(tranDate); // 後で消す
     if (startDate <= tranDate && tranDate <= endDate) {
       console.log("OK");
     } else {
