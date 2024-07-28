@@ -76,51 +76,12 @@ function submitAttendancev2() {
 // var FIXED_TOTAL_RANGE_POSITION = "I25";
   currentAttendanceSheet.getRange("I25").setValue(total);
 
-  protect(currentAttendanceSheet);
+  protect(currentAttendanceSheet,"E26");
   return true;
 
 }
 
 
 
-function askExecutable() {
-  var ui = SpreadsheetApp.getUi();
-  var title = '請求額の確定';
-  var prompt = '請求額を確定しますか？\n確定した場合、シートが保護され編集ができなくなります。'
-  var response = ui.alert(title, prompt, ui.ButtonSet.YES_NO);
-  if (response == ui.Button.YES) {
-    return true;
-  } else {
-    var msg = "処理をキャンセルしました。"
-    SpreadsheetApp.getActiveSpreadsheet().toast(msg, 'キャンセル', 5);
-    return false
-  }
 
-}
 
-function showResultMessage(result) {
-  if (result) {
-    var msg = "シートを保護しました。修正したい際には管理者までお問い合わせください。";
-    SpreadsheetApp.getActiveSpreadsheet().toast(msg, '確定処理成功', 7);
-  } else {
-    var msg = "エラーのため確定処理を中止しました。管理者までお問い合わせお願いします。";
-    SpreadsheetApp.getActiveSpreadsheet().toast(msg, '確定エラー', 7);
-  }
-
-}
-
-function protect(currentAttendanceSheet) {
-  var protection = currentAttendanceSheet.protect();
-  protection.setDescription(PROTECTION_DESCRIPTION);
-  protection.setWarningOnly(true);
-
-// var FIXED_MESSAGE_POSITION = "E26";
-  var messageRange = currentAttendanceSheet.getRange("E26");
-  messageRange.setValue(FIXED_MESSAGE);
-  messageRange.setFontColor("red");
-  messageRange.setFontWeight("bold");
-  messageRange.setFontSize(14);
-  messageRange.setHorizontalAlignment("right");
-
-  console.log("sheetを保護しました。");
-}

@@ -11,22 +11,30 @@ var EDITORS_LIST = scriptProperties.getProperty('EDITORS_LIST').split(",");
 var ENQUETE_FIRST_ANSWER_LIST = new Array('1.増やしたい ↑','2.今のペースで働きたい →','3.減らしたい ↓');
 var ENQUETE_FOURTH_ANSWER_LIST = new Array('今のところ、変わる予定はない','減る予定・可能性がある','増える予定・可能性がある');
 
+var ENQUETE_FIRST_ANSWER_LIST_V2 = new Array('1.積極的に追加したい','2.条件によっては追加可能','3.現状維持希望','4.減らしたい');
+var ENQUETE_SEVENTH_ANSWER_LIST_V2 = new Array('1. 変わる予定はない','2. 減る予定・可能性がある','3. 増える予定・可能性がある');
+
+
 // 勤務実績表のセル位置..
 var FIXED_STATUS_RANGE_POSITION = "F24";
 var STAFF_ID_RANGE_POSITION = "R2";
 var TOTAL_RANGE_POSITION = "I22";
-var TOTAL_CHECK_RANGE_POSITION = "I37";
-var FIXED_MESSAGE_POSITION = "E39";
-var FIXED_TOTAL_RANGE_POSITION = "I38";
+var TOTAL_CHECK_RANGE_POSITION = "I41";
+var FIXED_MESSAGE_POSITION = "E43";
+var FIXED_TOTAL_RANGE_POSITION = "I42";
 var ENQUETE_ATTENDANCE_FIRST_RANGE_POSITION = "C25";
 var ENQUETE_ATTENDANCE_SECOND_RANGE_POSITION = "C27";
 var ENQUETE_ATTENDANCE_THIRD_RANGE_POSITION = "C29";
 var ENQUETE_ATTENDANCE_FOURTH_RANGE_POSITION = "C31";
 var ENQUETE_ATTENDANCE_FIFTH_RANGE_POSITION = "C33";
 var ENQUETE_ATTENDANCE_SIXTH_RANGE_POSITION = "C35";
+var ENQUETE_ATTENDANCE_SEVENTH_RANGE_POSITION = "C37";
+var ENQUETE_ATTENDANCE_EIGHTH_RANGE_POSITION = "C39";
+
 
 var ENQUETE_TITLE_RANGE_POSITION = "C23";
 var ENQUETE_LAST_RANGE_POSITION = "C34";
+var ENQUETE_LAST_RANGE_POSITION_V2 = "C38";
 var ENQUETE_LAST_TITLE = "⑥その他、補足等あれば自由にご記入ください。 *任意";
 
 var CHECK_OK_TEXT = "OK";
@@ -237,4 +245,53 @@ function initializeProperies(cntKey) {
         properties.setProperty("notFindStaffIdCnt", 0);
         properties.setProperty("otherError", 0);
     }
+}
+
+function askExecutable() {
+  var ui = SpreadsheetApp.getUi();
+  var title = '請求額の確定';
+  var prompt = '請求額を確定しますか？\n確定した場合、シートが保護され編集ができなくなります。'
+  var response = ui.alert(title, prompt, ui.ButtonSet.YES_NO);
+  if (response == ui.Button.YES) {
+    return true;
+  } else {
+    var msg = "処理をキャンセルしました。"
+    SpreadsheetApp.getActiveSpreadsheet().toast(msg, 'キャンセル', 5);
+    return false
+  }
+
+}
+
+function showResultMessage(result) {
+  console.log ("showResultMessage, errorMessage=" +errorMessage);
+  if (result) {
+    var msg = "シートを保護しました。修正したい際には管理者までお問い合わせください。";
+    SpreadsheetApp.getActiveSpreadsheet().toast(msg, '確定処理成功', 7);
+  } else {
+    var msg;
+    if (errorMessage) {
+      msg = errorMessage;
+    } else {
+      msg = "エラーのため確定処理を中止しました。管理者までお問い合わせお願いします。";
+    }
+    Browser.msgBox(msg)
+    //    SpreadsheetApp.getActiveSpreadsheet().toast(msg, '確定エラー', 7);
+  }
+
+}
+
+
+function protect(currentAttendanceSheet,fixedPosition) {
+  var protection = currentAttendanceSheet.protect();
+  protection.setDescription(PROTECTION_DESCRIPTION);
+  protection.setWarningOnly(true);
+
+  var messageRange = currentAttendanceSheet.getRange(fixedPosition);
+  messageRange.setValue(FIXED_MESSAGE);
+  messageRange.setFontColor("red");
+  messageRange.setFontWeight("bold");
+  messageRange.setFontSize(14);
+  messageRange.setHorizontalAlignment("right");
+
+  console.log("sheetを保護しました。");
 }

@@ -101,74 +101,19 @@ function submitAttendancev4() {
     return false;
   }
 
-  var totalCheckStatus = currentAttendanceSheet.getRange(TOTAL_CHECK_RANGE_POSITION).getValue();
-  // var totalCheckStatus = currentAttendanceSheet.getRange("I37").getValue();
+  // var totalCheckStatus = currentAttendanceSheet.getRange(TOTAL_CHECK_RANGE_POSITION).getValue();
+  var totalCheckStatus = currentAttendanceSheet.getRange("I37").getValue();
   if (totalCheckStatus !== CHECK_OK_TEXT) {
     console.log("金額チェックNG。ファイル名：" + targetSpreadSheet.getName() + ", チェック結果：" + totalCheckStatus);
     return false;
   }
 
-  currentAttendanceSheet.getRange(FIXED_TOTAL_RANGE_POSITION).setValue(total);
-  // currentAttendanceSheet.getRange("I38").setValue(total);
+  // currentAttendanceSheet.getRange(FIXED_TOTAL_RANGE_POSITION).setValue(total);
+  currentAttendanceSheet.getRange("I38").setValue(total);
 
-  protectv4(currentAttendanceSheet);
-
-  //集計時に移行
-  // var cm_sheet = SpreadsheetApp.openById(CM_SHEET_ID).getSheetByName(CM_ENQUETE_SHEET_NAME);
-  // var thirdEnqueteAnswere = currentAttendanceSheet.getRange(ENQUETE_ATTENDANCE_THIRD_RANGE_POSITION).getValue();
-  // var sixthEnqueteAnswere = currentAttendanceSheet.getRange(ENQUETE_ATTENDANCE_SIXTH_RANGE_POSITION).getValue();
-  // cm_sheet.appendRow([staffId, targetSpreadSheet.getName(), currentAttendanceSheet.getName(), firstEnqueteAnsewer, secondEnqueteAnsewer, thirdEnqueteAnswere,fourthEnqueteAnsewer,fifthEnqueteAnsewer,sixthEnqueteAnswere]);
+  // protect(currentAttendanceSheet,FIXED_MESSAGE_POSITION);
+  protect(currentAttendanceSheet,"E39");
 
   return true;
 
-}
-
-
-
-function askExecutable() {
-  var ui = SpreadsheetApp.getUi();
-  var title = '請求額の確定';
-  var prompt = '請求額を確定しますか？\n確定した場合、シートが保護され編集ができなくなります。'
-  var response = ui.alert(title, prompt, ui.ButtonSet.YES_NO);
-  if (response == ui.Button.YES) {
-    return true;
-  } else {
-    var msg = "処理をキャンセルしました。"
-    SpreadsheetApp.getActiveSpreadsheet().toast(msg, 'キャンセル', 5);
-    return false
-  }
-
-}
-
-function showResultMessage(result) {
-  if (result) {
-    var msg = "シートを保護しました。修正したい際には管理者までお問い合わせください。";
-    SpreadsheetApp.getActiveSpreadsheet().toast(msg, '確定処理成功', 7);
-  } else {
-    var msg;
-    if (errorMessage) {
-      msg = errorMessage;
-    } else {
-      msg = "エラーのため確定処理を中止しました。管理者までお問い合わせお願いします。";
-    }
-    Browser.msgBox(msg)
-    //    SpreadsheetApp.getActiveSpreadsheet().toast(msg, '確定エラー', 7);
-  }
-
-}
-
-function protectv4(currentAttendanceSheet) {
-  var protection = currentAttendanceSheet.protect();
-  protection.setDescription(PROTECTION_DESCRIPTION);
-  protection.setWarningOnly(true);
-
-  var messageRange = currentAttendanceSheet.getRange(FIXED_MESSAGE_POSITION);
-  // var messageRange = currentAttendanceSheet.getRange("E39");
-  messageRange.setValue(FIXED_MESSAGE);
-  messageRange.setFontColor("red");
-  messageRange.setFontWeight("bold");
-  messageRange.setFontSize(14);
-  messageRange.setHorizontalAlignment("right");
-
-  console.log("sheetを保護しました。");
 }
