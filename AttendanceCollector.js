@@ -39,7 +39,7 @@ function collectMonthlyAttendanceSummary() {
       continue;
     }
 
-    //var isFixed = currentAttendanceSheet.getRange(FIXED_STATUS_RANGE_POSITION).getValue();
+    // var isFixed = currentAttendanceSheet.getRange(FIXED_STATUS_RANGE_POSITION).getValue();
     var protections = currentAttendanceSheet.getProtections(SpreadsheetApp.ProtectionType.SHEET);
     var isFixed = false;
 
@@ -69,7 +69,7 @@ function collectMonthlyAttendanceSummary() {
 
     var fixedTotal = currentAttendanceSheet.getRange(FIXED_TOTAL_RANGE_POSITION).getValue();
     if (total !== fixedTotal) {
-      console.warn("請求確定金額が勤務実績表の金額と一致しません。ファイル名：" + file.getName() + ", 金額：" + total);
+      console.warn("請求確定金額が勤務実績表の金額と一致しません。ファイル名：" + file.getName() +"シート名："+currentAttendanceSheet.getSheetName()+ ", 金額：" + total+ "確定金額："+fixedTotal);
       // unmatchedCnt++;
       continue;
 
@@ -180,13 +180,25 @@ function clearTotalToSummarySheet(attendanceSummarySheetId, prevMonthTitle, staf
 }
 
 function correctEnquete(staffId,fileName,currentAttendanceSheet){
+
   var hasSixthEnquete = (currentAttendanceSheet.getRange(ENQUETE_LAST_RANGE_POSITION).getValue() == ENQUETE_LAST_TITLE);
+  var hasEighthEnquete = (currentAttendanceSheet.getRange(ENQUETE_LAST_RANGE_POSITION_V2).getValue().startsWith("⑤【④で「2.減る可能性がある」「3.増える可能性がある」を選択した方】"));
+
   
   var cm_sheet = SpreadsheetApp.openById(CM_SHEET_ID).getSheetByName(CM_ENQUETE_SHEET_NAME);
   var firstEnqueteAnsewer = currentAttendanceSheet.getRange(ENQUETE_ATTENDANCE_FIRST_RANGE_POSITION).getValue();
   var secondEnqueteAnsewer = currentAttendanceSheet.getRange(ENQUETE_ATTENDANCE_SECOND_RANGE_POSITION).getValue();
   var thirdEnqueteAnswere = currentAttendanceSheet.getRange(ENQUETE_ATTENDANCE_THIRD_RANGE_POSITION).getValue();
-  if(hasSixthEnquete){
+  if(hasEighthEnquete){
+    var fourthEnqueteAnsewer = currentAttendanceSheet.getRange(ENQUETE_ATTENDANCE_FOURTH_RANGE_POSITION).getValue();
+    var fifthEnqueteAnsewer = currentAttendanceSheet.getRange(ENQUETE_ATTENDANCE_FIFTH_RANGE_POSITION).getValue();
+    var sixthEnqueteAnswere = currentAttendanceSheet.getRange(ENQUETE_ATTENDANCE_SIXTH_RANGE_POSITION).getValue();
+    var seventhEnqueteAnswere = currentAttendanceSheet.getRange(ENQUETE_ATTENDANCE_SEVENTH_RANGE_POSITION).getValue();
+    var eighthEnqueteAnswere = currentAttendanceSheet.getRange(ENQUETE_ATTENDANCE_EIGHTH_RANGE_POSITION).getValue();
+
+    cm_sheet.appendRow([staffId, fileName, currentAttendanceSheet.getName(), firstEnqueteAnsewer, secondEnqueteAnsewer, thirdEnqueteAnswere,fourthEnqueteAnsewer,fifthEnqueteAnsewer,sixthEnqueteAnswere,seventhEnqueteAnswere,eighthEnqueteAnswere]);
+
+  }else if(hasSixthEnquete){
     var fourthEnqueteAnsewer = currentAttendanceSheet.getRange(ENQUETE_ATTENDANCE_FOURTH_RANGE_POSITION).getValue();
     var fifthEnqueteAnsewer = currentAttendanceSheet.getRange(ENQUETE_ATTENDANCE_FIFTH_RANGE_POSITION).getValue();
     var sixthEnqueteAnswere = currentAttendanceSheet.getRange(ENQUETE_ATTENDANCE_SIXTH_RANGE_POSITION).getValue();
