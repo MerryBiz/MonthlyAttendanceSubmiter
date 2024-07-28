@@ -19,14 +19,14 @@ function submit() {
 
   if (hasEnquete) {
     var hasSixthEnquete = (currentAttendanceSheet.getRange(ENQUETE_LAST_RANGE_POSITION).getValue() == ENQUETE_LAST_TITLE);
-    if (hasSixthEnquete) {
+    var hasEighthEnquete = (currentAttendanceSheet.getRange(ENQUETE_LAST_RANGE_POSITION_V2).getValue().startsWith("⑤【④で「2.減る可能性がある」「3.増える可能性がある」を選択した方】"));
+    if(hasEighthEnquete){
+      submitIncludeEnquetev5();
+  } else if (hasSixthEnquete) {
+    
       submitIncludeEnqueteV2();
-    } else {
-      submitIncludeEnquete();
     }
   } else {
     submitWithoutEnquete();
   }
-
-  console.log("hasEnquete:" + hasEnquete);
 }
