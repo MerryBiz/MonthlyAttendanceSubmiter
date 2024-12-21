@@ -182,13 +182,21 @@ function clearTotalToSummarySheet(attendanceSummarySheetId, prevMonthTitle, staf
 function correctEnquete(staffId,fileName,currentAttendanceSheet){
 
   var hasSixthEnquete = (currentAttendanceSheet.getRange(ENQUETE_LAST_RANGE_POSITION).getValue() == ENQUETE_LAST_TITLE);
-  var hasEighthEnquete = (currentAttendanceSheet.getRange(ENQUETE_LAST_RANGE_POSITION_V2).getValue().startsWith("⑤【④で「2.減る可能性がある」「3.増える可能性がある」を選択した方】"));
-
+  var hasEighthEnquete = (currentAttendanceSheet.getRange(ENQUETE_LAST_RANGE_POSITION_V2).getValue().indexOf("⑤【④で「2.減る可能性がある」「3.増える可能性がある」を選択した方】") === 0);
   
   var cm_sheet = SpreadsheetApp.openById(CM_SHEET_ID).getSheetByName(CM_ENQUETE_SHEET_NAME);
   var firstEnqueteAnsewer = currentAttendanceSheet.getRange(ENQUETE_ATTENDANCE_FIRST_RANGE_POSITION).getValue();
   var secondEnqueteAnsewer = currentAttendanceSheet.getRange(ENQUETE_ATTENDANCE_SECOND_RANGE_POSITION).getValue();
   var thirdEnqueteAnswere = currentAttendanceSheet.getRange(ENQUETE_ATTENDANCE_THIRD_RANGE_POSITION).getValue();
+
+    // Remove duplicate rows
+  var cmData = cm_sheet.getDataRange().getValues();
+  for (var i = cmData.length - 1; i >= 1; i--) { // Skip header row
+    if (cmData[i][0] == staffId && cmData[i][1] == fileName && cmData[i][2] == currentAttendanceSheet.getName()) {
+      cm_sheet.deleteRow(i + 1); // Delete matching row
+    }
+  }
+  
   if(hasEighthEnquete){
     var fourthEnqueteAnsewer = currentAttendanceSheet.getRange(ENQUETE_ATTENDANCE_FOURTH_RANGE_POSITION).getValue();
     var fifthEnqueteAnsewer = currentAttendanceSheet.getRange(ENQUETE_ATTENDANCE_FIFTH_RANGE_POSITION).getValue();

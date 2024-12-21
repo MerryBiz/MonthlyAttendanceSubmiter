@@ -11,7 +11,7 @@ var EDITORS_LIST = scriptProperties.getProperty('EDITORS_LIST').split(",");
 var ENQUETE_FIRST_ANSWER_LIST = new Array('1.増やしたい ↑','2.今のペースで働きたい →','3.減らしたい ↓');
 var ENQUETE_FOURTH_ANSWER_LIST = new Array('今のところ、変わる予定はない','減る予定・可能性がある','増える予定・可能性がある');
 
-var ENQUETE_FIRST_ANSWER_LIST_V2 = new Array('1.積極的に追加したい','2.条件によっては追加可能','3.現状維持希望','4.減らしたい');
+var ENQUETE_FIRST_ANSWER_LIST_V2 = new Array('1.積極的に追加したい','2.条件によっては追加可能','3.現状維持希望 ','4.減らしたい');
 var ENQUETE_SEVENTH_ANSWER_LIST_V2 = new Array('1. 変わる予定はない','2. 減る予定・可能性がある','3. 増える予定・可能性がある');
 
 
@@ -78,6 +78,7 @@ var errorMessage;
 
 function getPrevMonthTitle() {
     var now = new Date();
+    now.setDate(1);
     now.setMonth(now.getMonth() - 1);
     var prevMonthTitle = now.getFullYear() + "年" + (now.getMonth() + 1) + "月";
     return prevMonthTitle;
